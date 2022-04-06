@@ -7,16 +7,16 @@
       <div class="user-profile__follower-count">
         <strong>Followers:</strong> {{ followers }}
       </div>
-      <form class="user-profile__create_tweet" @submit.prevent="createNewTweet">
-        <label for="newTweet"><strong>New Tweet</strong></label>
-        <textarea id="newTweet" rows="4" v-model="newTweetContent" />
+      <form class="user-profile__create_tweet" @submit.prevent="createNewTweet" :class="{' --exceeded': newTweetCharacterCount > 180 }">
+        <label for="newTweet"><strong>New Tweet</strong>({{newTweetCharacterCount}}/180)</label>
+        <textarea id="newTweet" rows="4" v-model="state.newTweetContent" />
 
         <div class="user-profile__create-tweet-type">
           <label for="newTweetType"><strong>Type: </strong></label>
-          <select id="newTweetType" v-model="selectedTweetType">
+          <select id="newTweetType" v-model="state.selectedTweetType">
             <option
               :value="option.value"
-              v-for="(option, index) in tweetTypes"
+              v-for="(option, index) in state.tweetTypes"
               :key="index"
             >
               {{ option.name }}
@@ -45,10 +45,40 @@
 </template>
 
 <script>
+import {reactive} from 'vue';
 import TweetItem from "./TweetItem.vue";
 
 export default {
   name: "UserProfile",
+
+  setup() {
+    const state = reactive({
+            newTweetContent: "",
+      selectedTweetType: "instant",
+      tweetTypes: [
+        { value: "draft", name: "Draft" },
+        { value: "instant", name: "Instant Tweet" },
+      ],
+      followers: 0,
+      user: {
+        id: 1,
+        username: "_Tjadam",
+        firstName: "Shawn",
+        lastName: "Orn",
+        email: "Shawn@test.com",
+        isAdmin: true,
+        tweets: [
+          { id: 1, content: "Twitter is awesome :)" },
+          { id: 2, content: "Twitter number twooo :)" },
+        ],
+       }
+    })
+
+    return {
+      state
+    }
+  },
+
   components: { TweetItem },
   data() {
     return {
@@ -81,6 +111,11 @@ export default {
     },
   },
   computed: {
+
+    newTweetCharacterCount() {
+      return this.newTweetContent.length;
+    },
+
     fullName() {
       return `${this.user.firstName} ${this.user.lastName}`;
     },
@@ -145,6 +180,17 @@ export default {
       padding-top: 20px;
       display: flex;
       flex-direction: column;
+
+      &.--exceeded {
+        color: red;
+        border-color: red;
+
+        button {
+          background-color: red;
+          border: none;
+          color: white;
+        }
+      }
     }
   }
   .user-profile__tweets-wrapper {

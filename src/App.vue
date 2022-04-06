@@ -1,21 +1,35 @@
 <template>
-<div id="app">
-  <UserProfile/>
-</div>
+  <div id="app">
+    <nav>
+      <div class="navigation__logo">Twitter</div>
+
+      <div class="navigation__user">
+        {{ user.username }}
+      </div>
+    </nav>
+    <UserProfile />
+  </div>
 </template>
 
 <script>
 import UserProfile from "./components/UserProfile.vue";
 
 export default {
-  name: 'App',
-  components: { UserProfile }
-}
+  name: "App",
+  components: { UserProfile },
 
+  data() {
+    return {
+      user: {
+        username: "Tjadam",
+      },
+    };
+  },
+};
 </script>
 
-<style>
-@import './assets/base.css';
+<style lang="scss">
+@import "./assets/base.css";
 
 #app {
   /* max-width: 1280px;
@@ -26,8 +40,27 @@ export default {
   --webkit-font-smoothing: antialiasied;
   color: #2c3e50;
   min-height: 100vh;
-  background-color: #F3F5FA;
+  background-color: #f3f5fa;
 }
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 5%;
+  background-color: deeppink;
+  color: white;
+
+  .navigation__logo {
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  .navigation__user {
+    font-weight: bold;
+  }
+}
+
 /* 
 header {
   line-height: 1.5;
